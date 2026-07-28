@@ -263,26 +263,26 @@ export function MainChatScreen({ navigation }: any) {
     <Bubble
       {...props}
       wrapperStyle={{
-        left: { backgroundColor: colors.card, borderRadius: 16, borderBottomLeftRadius: 4 },
-        right: { backgroundColor: colors.accent, borderRadius: 16, borderBottomRightRadius: 4 },
+        left: { backgroundColor: colors.card, borderTopLeftRadius: 4, borderTopRightRadius: 16, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 },
+        right: { backgroundColor: colors.primary, borderTopLeftRadius: 16, borderTopRightRadius: 4, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 },
       }}
-      textStyle={{ left: { color: colors.text }, right: { color: '#000' } }}
+      textStyle={{ left: { color: colors.foreground }, right: { color: colors.primaryForeground } }}
     />
   );
 
   const renderInputToolbar = (props: any) => (
     <InputToolbar
       {...props}
-      containerStyle={{ backgroundColor: colors.background, borderTopColor: colors.cardBorder, borderTopWidth: 1, paddingHorizontal: 8, paddingVertical: 4 }}
+      containerStyle={{ backgroundColor: colors.background, borderTopColor: colors.border, borderTopWidth: 1, paddingHorizontal: 8, paddingVertical: 4 }}
       primaryStyle={{ alignItems: 'center' }}
-      textInputStyle={{ color: colors.text, fontSize: 16 }}
+      textInputStyle={{ color: colors.foreground, fontSize: 16 }}
     />
   );
 
   const renderSend = (props: any) => (
     <Send {...props} containerStyle={{ justifyContent: 'center', paddingHorizontal: 8 }}>
       <View style={styles.sendButton}>
-        <SendIcon size={16} color={colors.black} />
+        <SendIcon size={16} color={colors.primaryForeground} />
       </View>
     </Send>
   );
@@ -290,7 +290,7 @@ export function MainChatScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.accent} />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -311,15 +311,17 @@ export function MainChatScreen({ navigation }: any) {
       {/* Sidebar */}
       <Animated.View style={[styles.sidebar, { transform: [{ translateX: sidebarAnim }] }]}>
         <View style={styles.sidebarHeader}>
-          <Text style={styles.sidebarTitle}>10ContoAI</Text>
+          <Text style={styles.sidebarTitle}>
+            10Conto<Text style={{ color: colors.primary }}>AI</Text>
+          </Text>
           <TouchableOpacity onPress={closeSidebar}>
-            <XIcon size={20} color={colors.textSecondary} />
+            <XIcon size={20} color={colors.mutedForeground} />
           </TouchableOpacity>
         </View>
 
         {/* New Chat */}
         <TouchableOpacity style={styles.newChatBtn} onPress={handleNewChat}>
-          <PlusIcon size={16} color={colors.black} />
+          <PlusIcon size={16} color={colors.primaryForeground} />
           <Text style={styles.newChatText}>Nova conversa</Text>
         </TouchableOpacity>
 
@@ -331,12 +333,12 @@ export function MainChatScreen({ navigation }: any) {
             onPress={() => { setSidebarOpen(false); setShowAgentPicker(true); }}
           >
             <View style={styles.agentSelectorIcon}>
-              {activeAgent ? getAgentIconComponent(activeAgent.name, 18) : <BotIcon size={18} color={colors.accent} />}
+              {activeAgent ? getAgentIconComponent(activeAgent.name, 18) : <BotIcon size={18} color={colors.primary} />}
             </View>
             <Text style={styles.agentSelectorName} numberOfLines={1}>
               {activeAgent?.name || 'Selecionar agente'}
             </Text>
-            <ChevronRightIcon size={16} color={colors.textMuted} />
+            <ChevronRightIcon size={16} color={colors.mutedForeground} />
           </TouchableOpacity>
         </View>
 
@@ -367,7 +369,7 @@ export function MainChatScreen({ navigation }: any) {
                 style={styles.convDelete}
                 onPress={() => handleDeleteConversation(item.id)}
               >
-                <TrashIcon size={14} color={colors.textMuted} />
+                <TrashIcon size={14} color={colors.mutedForeground} />
               </TouchableOpacity>
             </TouchableOpacity>
           )}
@@ -382,7 +384,7 @@ export function MainChatScreen({ navigation }: any) {
             style={styles.sidebarFooterItem}
             onPress={() => { closeSidebar(); navigation.navigate('Profile'); }}
           >
-            <SettingsIcon size={18} color={colors.textSecondary} />
+            <SettingsIcon size={18} color={colors.mutedForeground} />
             <Text style={styles.sidebarFooterText}>Configuracoes</Text>
           </TouchableOpacity>
         </View>
@@ -393,12 +395,12 @@ export function MainChatScreen({ navigation }: any) {
         {/* Chat header */}
         <View style={styles.chatHeader}>
           <TouchableOpacity onPress={openSidebar} style={styles.headerBtn}>
-            <MenuIcon size={22} />
+            <MenuIcon size={22} color={colors.foreground} />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.headerCenter} onPress={() => setShowAgentPicker(true)}>
             <View style={styles.headerAvatar}>
-              {activeAgent ? getAgentIconComponent(activeAgent.name, 16) : <BotIcon size={16} color={colors.accent} />}
+              {activeAgent ? getAgentIconComponent(activeAgent.name, 16) : <BotIcon size={16} color={colors.primary} />}
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.headerAgentName} numberOfLines={1}>
@@ -406,18 +408,18 @@ export function MainChatScreen({ navigation }: any) {
               </Text>
               <Text style={styles.headerModel}>{activeAgent?.model || ''}</Text>
             </View>
-            <ChevronRightIcon size={14} color={colors.textMuted} />
+            <ChevronRightIcon size={14} color={colors.mutedForeground} />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleNewChat} style={[styles.headerBtn, styles.newBtn]}>
-            <PlusIcon size={18} color={colors.black} />
+            <PlusIcon size={18} color={colors.primaryForeground} />
           </TouchableOpacity>
         </View>
 
         {/* Typing indicator */}
         {typing && (
           <View style={styles.typingBar}>
-            <ActivityIndicator size="small" color={colors.accent} />
+            <ActivityIndicator size="small" color={colors.primary} />
             <Text style={styles.typingText}>{activeAgent?.name} respondendo...</Text>
           </View>
         )}
@@ -430,13 +432,13 @@ export function MainChatScreen({ navigation }: any) {
           renderBubble={renderBubble}
           renderInputToolbar={renderInputToolbar}
           renderSend={renderSend}
-          timeTextStyle={{ left: { color: colors.textMuted }, right: { color: colors.textMuted } }}
+          timeTextStyle={{ left: { color: colors.mutedForeground }, right: { color: colors.primaryForeground } }}
           renderChatEmpty={() => (
             <View style={styles.emptyChat}>
               <View style={styles.emptyIconWrap}>
                 {activeAgent
                   ? getAgentIconComponent(activeAgent.name, 32)
-                  : <SparklesIcon size={32} color={colors.accent} />
+                  : <SparklesIcon size={32} color={colors.primary} />
                 }
               </View>
               <Text style={styles.emptyTitle}>
@@ -496,85 +498,85 @@ const styles = StyleSheet.create({
   overlayBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' },
   sidebar: {
     position: 'absolute', top: 0, left: 0, bottom: 0, width: SIDEBAR_WIDTH,
-    backgroundColor: colors.surface, zIndex: 10, borderRightWidth: 1, borderRightColor: colors.cardBorder,
+    backgroundColor: colors.popover, zIndex: 10, borderRightWidth: 1, borderRightColor: colors.border,
   },
   sidebarHeader: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingTop: 56, paddingHorizontal: spacing.lg, paddingBottom: spacing.md,
   },
-  sidebarTitle: { color: colors.text, fontSize: 20, fontWeight: '700' },
+  sidebarTitle: { color: colors.foreground, fontSize: 20, fontWeight: '700' },
   newChatBtn: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.accent,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.primary,
     borderRadius: borderRadius.md, marginHorizontal: spacing.md, padding: spacing.md,
     marginBottom: spacing.lg, gap: spacing.sm, justifyContent: 'center',
   },
-  newChatText: { color: colors.black, fontSize: 14, fontWeight: '700' },
+  newChatText: { color: colors.primaryForeground, fontSize: 14, fontWeight: '700' },
   sidebarSection: { paddingHorizontal: spacing.md, marginBottom: spacing.sm },
   sidebarSectionTitle: {
-    color: colors.textMuted, fontSize: 11, fontWeight: '600',
+    color: colors.mutedForeground, fontSize: 11, fontWeight: '600',
     textTransform: 'uppercase', letterSpacing: 1, marginBottom: spacing.sm,
   },
   agentSelector: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card,
     borderRadius: borderRadius.md, padding: spacing.md, gap: spacing.sm,
-    borderWidth: 1, borderColor: colors.cardBorder,
+    borderWidth: 1, borderColor: colors.border,
   },
   agentSelectorIcon: {
-    width: 30, height: 30, borderRadius: 8, backgroundColor: colors.accentMuted,
+    width: 30, height: 30, borderRadius: 8, backgroundColor: colors.muted,
     justifyContent: 'center', alignItems: 'center',
   },
-  agentSelectorName: { flex: 1, color: colors.text, fontSize: 14, fontWeight: '600' },
+  agentSelectorName: { flex: 1, color: colors.foreground, fontSize: 14, fontWeight: '600' },
   convList: { flex: 1 },
   convItem: {
     flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.md,
     paddingHorizontal: spacing.md, gap: spacing.sm, borderRadius: borderRadius.sm,
     marginHorizontal: spacing.xs,
   },
-  convItemActive: { backgroundColor: colors.cardHover },
+  convItemActive: { backgroundColor: colors.muted },
   convAvatar: {
-    width: 28, height: 28, borderRadius: 8, backgroundColor: colors.accentMuted,
+    width: 28, height: 28, borderRadius: 8, backgroundColor: colors.muted,
     justifyContent: 'center', alignItems: 'center',
   },
   convInfo: { flex: 1 },
-  convTitle: { color: colors.text, fontSize: 14, fontWeight: '500' },
-  convMeta: { color: colors.textMuted, fontSize: 11, marginTop: 2 },
+  convTitle: { color: colors.foreground, fontSize: 14, fontWeight: '500' },
+  convMeta: { color: colors.mutedForeground, fontSize: 11, marginTop: 2 },
   convDelete: { padding: 4 },
-  emptyHistory: { color: colors.textMuted, fontSize: 13, padding: spacing.lg, textAlign: 'center' },
+  emptyHistory: { color: colors.mutedForeground, fontSize: 13, padding: spacing.lg, textAlign: 'center' },
   sidebarFooter: {
-    borderTopWidth: 1, borderTopColor: colors.cardBorder, padding: spacing.md,
+    borderTopWidth: 1, borderTopColor: colors.border, padding: spacing.md,
   },
   sidebarFooterItem: {
     flexDirection: 'row', alignItems: 'center', gap: spacing.sm, padding: spacing.sm,
   },
-  sidebarFooterText: { color: colors.textSecondary, fontSize: 14 },
+  sidebarFooterText: { color: colors.mutedForeground, fontSize: 14 },
 
   // Main Chat
   mainArea: { flex: 1 },
   chatHeader: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.sm,
     paddingTop: 56, paddingBottom: spacing.sm, backgroundColor: colors.background,
-    borderBottomWidth: 1, borderBottomColor: colors.cardBorder,
+    borderBottomWidth: 1, borderBottomColor: colors.border,
   },
   headerBtn: { width: 40, height: 40, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
-  newBtn: { backgroundColor: colors.accent },
+  newBtn: { backgroundColor: colors.primary },
   headerCenter: {
     flex: 1, flexDirection: 'row', alignItems: 'center',
     backgroundColor: colors.card, borderRadius: borderRadius.md,
-    padding: spacing.sm, gap: spacing.sm, borderWidth: 1, borderColor: colors.cardBorder,
+    padding: spacing.sm, gap: spacing.sm, borderWidth: 1, borderColor: colors.border,
   },
   headerAvatar: {
-    width: 30, height: 30, borderRadius: 8, backgroundColor: colors.accentMuted,
+    width: 30, height: 30, borderRadius: 8, backgroundColor: colors.muted,
     justifyContent: 'center', alignItems: 'center',
   },
-  headerAgentName: { color: colors.text, fontSize: 14, fontWeight: '700' },
-  headerModel: { color: colors.textMuted, fontSize: 10 },
+  headerAgentName: { color: colors.foreground, fontSize: 14, fontWeight: '700' },
+  headerModel: { color: colors.mutedForeground, fontSize: 10 },
   typingBar: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm, backgroundColor: colors.background, gap: spacing.sm,
   },
-  typingText: { color: colors.textSecondary, fontSize: 12 },
+  typingText: { color: colors.mutedForeground, fontSize: 12 },
   sendButton: {
-    width: 32, height: 32, borderRadius: 16, backgroundColor: colors.accent,
+    width: 32, height: 32, borderRadius: 16, backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center',
   },
   emptyChat: {
@@ -582,11 +584,11 @@ const styles = StyleSheet.create({
     padding: spacing.xxl, transform: [{ scaleY: -1 }],
   },
   emptyIconWrap: {
-    width: 72, height: 72, borderRadius: 18, backgroundColor: colors.accentMuted,
+    width: 72, height: 72, borderRadius: 18, backgroundColor: colors.muted,
     justifyContent: 'center', alignItems: 'center', marginBottom: spacing.lg,
   },
-  emptyTitle: { color: colors.text, fontSize: 20, fontWeight: '700', textAlign: 'center' },
-  emptySubtitle: { color: colors.textSecondary, fontSize: 14, textAlign: 'center', marginTop: 6, lineHeight: 20 },
+  emptyTitle: { color: colors.foreground, fontSize: 20, fontWeight: '700', textAlign: 'center' },
+  emptySubtitle: { color: colors.mutedForeground, fontSize: 14, textAlign: 'center', marginTop: 6, lineHeight: 20 },
 
   // Agent picker modal
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'flex-end' },
@@ -595,27 +597,27 @@ const styles = StyleSheet.create({
     padding: spacing.xxl, maxHeight: '60%',
   },
   modalHandle: {
-    width: 36, height: 4, borderRadius: 2, backgroundColor: colors.cardBorder,
+    width: 36, height: 4, borderRadius: 2, backgroundColor: colors.border,
     alignSelf: 'center', marginBottom: spacing.xl,
   },
-  modalTitle: { color: colors.text, fontSize: 18, fontWeight: '700', marginBottom: spacing.lg },
+  modalTitle: { color: colors.foreground, fontSize: 18, fontWeight: '700', marginBottom: spacing.lg },
   agentItem: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: colors.background,
     borderRadius: borderRadius.lg, padding: spacing.md, marginBottom: spacing.sm,
-    borderWidth: 1, borderColor: colors.cardBorder, gap: spacing.md,
+    borderWidth: 1, borderColor: colors.border, gap: spacing.md,
   },
-  agentItemActive: { borderColor: colors.accent, backgroundColor: colors.accentMuted },
+  agentItemActive: { borderColor: colors.primary, backgroundColor: colors.muted },
   agentItemIcon: {
-    width: 40, height: 40, borderRadius: 10, backgroundColor: colors.accentMuted,
+    width: 40, height: 40, borderRadius: 10, backgroundColor: colors.muted,
     justifyContent: 'center', alignItems: 'center',
   },
-  agentItemName: { color: colors.text, fontSize: 15, fontWeight: '600' },
-  agentItemModel: { color: colors.textMuted, fontSize: 12, marginTop: 1 },
-  agentItemDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.textMuted },
-  agentItemDotActive: { backgroundColor: colors.accent },
+  agentItemName: { color: colors.foreground, fontSize: 15, fontWeight: '600' },
+  agentItemModel: { color: colors.mutedForeground, fontSize: 12, marginTop: 1 },
+  agentItemDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.mutedForeground },
+  agentItemDotActive: { backgroundColor: colors.success },
   closeBtn: {
     borderRadius: borderRadius.md, padding: spacing.lg, alignItems: 'center',
-    marginTop: spacing.md, borderWidth: 1, borderColor: colors.cardBorder,
+    marginTop: spacing.md, borderWidth: 1, borderColor: colors.border,
   },
-  closeBtnText: { color: colors.textSecondary, fontSize: 15, fontWeight: '600' },
+  closeBtnText: { color: colors.mutedForeground, fontSize: 15, fontWeight: '600' },
 });

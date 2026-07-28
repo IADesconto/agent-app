@@ -25,7 +25,7 @@ export function TemplateCard({ id, name, description, selected, onPress }: Templ
       {description ? <Text style={styles.desc} numberOfLines={2}>{description}</Text> : null}
       {selected && (
         <View style={styles.checkmark}>
-          <CheckIcon size={14} color={colors.black} />
+          <CheckIcon size={14} color={colors.primaryForeground} />
         </View>
       )}
     </TouchableOpacity>
@@ -40,36 +40,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 140,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: colors.border,
     position: 'relative',
   },
   cardSelected: {
-    borderColor: colors.accent,
-    backgroundColor: colors.accentMuted,
+    borderColor: colors.primary,
+    backgroundColor: colors.muted,
   },
   iconContainer: {
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: colors.cardBorder,
+    backgroundColor: colors.border,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.sm,
   },
   iconContainerSelected: {
-    backgroundColor: colors.accentGlow,
+    backgroundColor: colors.primary + '25',
   },
   name: {
-    color: colors.text,
+    color: colors.foreground,
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
   },
   nameSelected: {
-    color: colors.accent,
+    color: colors.primary,
   },
   desc: {
-    color: colors.textMuted,
+    color: colors.mutedForeground,
     fontSize: 11,
     textAlign: 'center',
     marginTop: spacing.xs,
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: colors.accent,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },

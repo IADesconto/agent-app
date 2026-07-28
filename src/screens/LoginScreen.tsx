@@ -15,6 +15,15 @@ import {
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { colors, spacing, borderRadius } from '../theme';
+import {
+  BotIcon,
+  UserIcon,
+  MailIcon,
+  LockIcon,
+  EyeIcon,
+  EyeOffIcon,
+  ArrowRightIcon,
+} from '../components/icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -46,6 +55,7 @@ export function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const tabAnim = useRef(new Animated.Value(0)).current;
 
@@ -144,12 +154,11 @@ export function LoginScreen() {
         {/* Brand Header */}
         <View style={styles.brandSection}>
           <View style={styles.logoContainer}>
-            <View style={styles.logoGlow} />
-            <Text style={styles.logoIcon}>{'\u{1F916}'}</Text>
+            <BotIcon size={36} color={colors.primary} />
           </View>
-          <Text style={styles.brandName}>10ContoAI</Text>
+          <Text style={styles.brandName}>10Conto<span style={{ color: colors.primary }}>AI</span></Text>
           <Text style={styles.tagline}>
-            Agentes de IA inteligentes{'\n'}para o seu negocio
+            Agentes de IA inteligentes para o seu negocio
           </Text>
         </View>
 
@@ -170,7 +179,7 @@ export function LoginScreen() {
             activeOpacity={0.7}
           >
             <Text style={[styles.tabText, isSignup && styles.tabTextActive]}>
-              Cadastrar
+              Criar conta
             </Text>
           </TouchableOpacity>
           <Animated.View
@@ -186,7 +195,7 @@ export function LoginScreen() {
           activeOpacity={0.8}
         >
           {googleLoading ? (
-            <ActivityIndicator color={colors.text} size="small" />
+            <ActivityIndicator color={colors.foreground} size="small" />
           ) : (
             <>
               <View style={styles.googleIconContainer}>
@@ -211,11 +220,11 @@ export function LoginScreen() {
               styles.inputWrapper,
               focusedInput === 'name' && styles.inputWrapperFocused,
             ]}>
-              <Text style={styles.inputIcon}>{'\u{1F464}'}</Text>
+              <UserIcon size={18} color={colors.mutedForeground} />
               <TextInput
                 style={styles.input}
                 placeholder="Nome completo"
-                placeholderTextColor={colors.textMuted}
+                placeholderTextColor={colors.mutedForeground}
                 value={name}
                 onChangeText={setName}
                 onFocus={() => setFocusedInput('name')}
@@ -229,11 +238,11 @@ export function LoginScreen() {
             styles.inputWrapper,
             focusedInput === 'email' && styles.inputWrapperFocused,
           ]}>
-            <Text style={styles.inputIcon}>{'\u{2709}'}</Text>
+            <MailIcon size={18} color={colors.mutedForeground} />
             <TextInput
               style={styles.input}
               placeholder="seu@email.com"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.mutedForeground}
               value={email}
               onChangeText={setEmail}
               onFocus={() => setFocusedInput('email')}
@@ -247,17 +256,23 @@ export function LoginScreen() {
             styles.inputWrapper,
             focusedInput === 'password' && styles.inputWrapperFocused,
           ]}>
-            <Text style={styles.inputIcon}>{'\u{1F512}'}</Text>
+            <LockIcon size={18} color={colors.mutedForeground} />
             <TextInput
               style={styles.input}
               placeholder="Sua senha"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.mutedForeground}
               value={password}
               onChangeText={setPassword}
               onFocus={() => setFocusedInput('password')}
               onBlur={() => setFocusedInput(null)}
-              secureTextEntry
+              secureTextEntry={!showPassword}
             />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              {showPassword
+                ? <EyeOffIcon size={18} color={colors.mutedForeground} />
+                : <EyeIcon size={18} color={colors.mutedForeground} />
+              }
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity
@@ -267,14 +282,14 @@ export function LoginScreen() {
             activeOpacity={0.9}
           >
             {loading ? (
-              <ActivityIndicator color="#000" />
+              <ActivityIndicator color={colors.primaryForeground} />
             ) : (
-              <Text style={styles.submitButtonText}>
-                {isSignup ? 'Criar conta gratuita' : 'Entrar'}
-              </Text>
-            )}
-            {!loading && (
-              <Text style={styles.submitArrow}>{'\u2192'}</Text>
+              <>
+                <Text style={styles.submitButtonText}>
+                  {isSignup ? 'Criar conta gratuita' : 'Entrar'}
+                </Text>
+                <ArrowRightIcon size={18} color={colors.primaryForeground} />
+              </>
             )}
           </TouchableOpacity>
         </View>
@@ -309,38 +324,26 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xxl + 4,
   },
   logoContainer: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: colors.accentMuted,
+    width: 72,
+    height: 72,
+    borderRadius: 18,
+    backgroundColor: colors.muted,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.xl,
-    position: 'relative',
+    marginBottom: spacing.lg,
     borderWidth: 1,
-    borderColor: colors.accent + '30',
-  },
-  logoGlow: {
-    position: 'absolute',
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: colors.accent + '15',
-    transform: [{ scale: 1.4 }],
-  },
-  logoIcon: {
-    fontSize: 40,
+    borderColor: colors.border,
   },
   brandName: {
     fontSize: 32,
     fontWeight: '800',
-    color: colors.text,
+    color: colors.foreground,
     letterSpacing: -1.5,
     marginBottom: spacing.sm,
   },
   tagline: {
     fontSize: 15,
-    color: colors.textSecondary,
+    color: colors.mutedForeground,
     textAlign: 'center',
     lineHeight: 22,
     letterSpacing: 0.2,
@@ -354,7 +357,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
     position: 'relative',
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: colors.border,
   },
   tab: {
     flex: 1,
@@ -366,17 +369,17 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 15,
     fontWeight: '600',
-    color: colors.textSecondary,
+    color: colors.mutedForeground,
   },
   tabTextActive: {
-    color: '#000',
+    color: colors.primaryForeground,
   },
   tabIndicator: {
     position: 'absolute',
     top: 3,
     width: '50%',
     height: '100%',
-    backgroundColor: colors.accent,
+    backgroundColor: colors.primary,
     borderRadius: borderRadius.md,
     marginTop: -3,
     marginLeft: -3,
@@ -391,7 +394,7 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     padding: spacing.md + 2,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: colors.border,
     gap: spacing.md,
   },
   googleIconContainer: {
@@ -408,7 +411,7 @@ const styles = StyleSheet.create({
     color: '#4285F4',
   },
   googleText: {
-    color: colors.text,
+    color: colors.foreground,
     fontSize: 15,
     fontWeight: '600',
   },
@@ -422,10 +425,10 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: colors.cardBorder,
+    backgroundColor: colors.border,
   },
   dividerText: {
-    color: colors.textMuted,
+    color: colors.mutedForeground,
     fontSize: 12,
     letterSpacing: 0.5,
   },
@@ -440,25 +443,21 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     paddingHorizontal: spacing.lg,
     borderWidth: 1.5,
-    borderColor: colors.cardBorder,
+    borderColor: colors.border,
     gap: spacing.md,
   },
   inputWrapperFocused: {
-    borderColor: colors.accent + '60',
-    backgroundColor: colors.accentMuted,
-  },
-  inputIcon: {
-    fontSize: 18,
-    opacity: 0.6,
+    borderColor: colors.primary + '60',
+    backgroundColor: colors.card,
   },
   input: {
     flex: 1,
     paddingVertical: spacing.lg,
     fontSize: 15,
-    color: colors.text,
+    color: colors.foreground,
   },
   submitButton: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.primary,
     borderRadius: borderRadius.lg,
     padding: spacing.lg + 2,
     alignItems: 'center',
@@ -471,19 +470,14 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   submitButtonText: {
-    color: '#000',
+    color: colors.primaryForeground,
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: -0.2,
   },
-  submitArrow: {
-    color: '#000',
-    fontSize: 18,
-    fontWeight: '700',
-  },
   // Footer
   footerText: {
-    color: colors.textMuted,
+    color: colors.mutedForeground,
     fontSize: 12,
     textAlign: 'center',
     marginTop: spacing.xxl,
@@ -491,7 +485,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   footerLink: {
-    color: colors.accent,
+    color: colors.primary,
     fontWeight: '600',
   },
 });

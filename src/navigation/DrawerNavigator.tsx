@@ -45,8 +45,8 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
           style={drawerStyles.navItem}
           onPress={() => props.navigation.navigate('Main')}
         >
-          <MessageSquareIcon size={20} color={colors.accent} />
-          <Text style={[drawerStyles.navText, { color: colors.accent }]}>Chat</Text>
+          <MessageSquareIcon size={20} color={colors.primary} />
+          <Text style={[drawerStyles.navText, { color: colors.primary }]}>Chat</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -93,10 +93,10 @@ const drawerStyles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   userSection: {
     paddingTop: 56, paddingHorizontal: spacing.xl, paddingBottom: spacing.xl,
-    borderBottomWidth: 1, borderBottomColor: colors.cardBorder, alignItems: 'center',
+    borderBottomWidth: 1, borderBottomColor: colors.border, alignItems: 'center',
   },
   avatar: {
-    width: 56, height: 56, borderRadius: 28, backgroundColor: colors.accent,
+    width: 56, height: 56, borderRadius: 28, backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center', marginBottom: spacing.md,
   },
   avatarText: { color: '#000', fontSize: 22, fontWeight: '700' },
@@ -108,9 +108,9 @@ const drawerStyles = StyleSheet.create({
   },
   navText: { color: colors.text, fontSize: 16, fontWeight: '500' },
   divider: {
-    height: 1, backgroundColor: colors.cardBorder, marginVertical: spacing.md,
+    height: 1, backgroundColor: colors.border, marginVertical: spacing.md,
     marginHorizontal: spacing.xl,
   },
-  footer: { padding: spacing.xl, borderTopWidth: 1, borderTopColor: colors.cardBorder },
-  footerText: { color: colors.textMuted, fontSize: 12, textAlign: 'center' },
+  footer: { padding: spacing.xl, borderTopWidth: 1, borderTopColor: colors.border },
+  footerText: { color: colors.mutedForeground, fontSize: 12, textAlign: 'center' },
 });

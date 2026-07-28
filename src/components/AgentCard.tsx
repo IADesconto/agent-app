@@ -38,7 +38,7 @@ export function AgentCard({ agent, onPress }: AgentCardProps) {
           </Text>
         </View>
       </View>
-      <ChevronRightIcon size={20} color={colors.textMuted} />
+      <ChevronRightIcon size={20} color={colors.mutedForeground} />
     </TouchableOpacity>
   );
 }
@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
     marginHorizontal: spacing.lg,
     marginVertical: 5,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: colors.border,
   },
   iconWrap: {
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: colors.accentMuted,
+    backgroundColor: colors.muted,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    color: colors.text,
+    color: colors.foreground,
     fontSize: 15,
     fontWeight: '600',
     marginBottom: 4,
@@ -79,23 +79,23 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   model: {
-    color: colors.textMuted,
+    color: colors.mutedForeground,
     fontSize: 12,
   },
   statusDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: colors.textMuted,
+    backgroundColor: colors.mutedForeground,
   },
   statusActive: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.primary,
   },
   statusLabel: {
-    color: colors.textMuted,
+    color: colors.mutedForeground,
     fontSize: 11,
   },
   statusLabelActive: {
-    color: colors.accent,
+    color: colors.primary,
   },
 });

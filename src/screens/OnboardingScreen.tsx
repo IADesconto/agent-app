@@ -103,7 +103,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.accent} />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Criando seus agentes...</Text>
       </View>
     );
@@ -112,7 +112,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   if (loadingData) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.accent} />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -212,34 +212,34 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   loadingContainer: { flex: 1, backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { color: colors.textSecondary, fontSize: 16, marginTop: spacing.lg },
+  loadingText: { color: colors.mutedForeground, fontSize: 16, marginTop: spacing.lg },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingHorizontal: spacing.xl, paddingTop: 56, paddingBottom: spacing.md, backgroundColor: colors.background,
   },
-  logo: { fontSize: 24, fontWeight: '800', color: colors.accent, letterSpacing: -1 },
+  logo: { fontSize: 24, fontWeight: '800', color: colors.primary, letterSpacing: -1 },
   skipText: { color: colors.danger, fontSize: 14, fontWeight: '600' },
   progress: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.lg },
-  progressDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.cardBorder },
-  progressDotActive: { backgroundColor: colors.accent },
-  progressLine: { width: 40, height: 2, backgroundColor: colors.cardBorder, marginHorizontal: 4 },
+  progressDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.border },
+  progressDotActive: { backgroundColor: colors.primary },
+  progressLine: { width: 40, height: 2, backgroundColor: colors.border, marginHorizontal: 4 },
   content: { paddingHorizontal: spacing.xl, paddingBottom: spacing.xxl },
   title: { fontSize: 24, fontWeight: '700', color: colors.text, marginBottom: spacing.sm },
-  subtitle: { fontSize: 15, color: colors.textSecondary, marginBottom: spacing.xxl },
+  subtitle: { fontSize: 15, color: colors.mutedForeground, marginBottom: spacing.xxl },
   plansList: { gap: spacing.lg },
   agentGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md, justifyContent: 'center', marginBottom: spacing.xxl },
-  button: { backgroundColor: colors.accent, borderRadius: borderRadius.md, padding: spacing.lg, alignItems: 'center' },
+  button: { backgroundColor: colors.primary, borderRadius: borderRadius.md, padding: spacing.lg, alignItems: 'center' },
   buttonText: { color: '#000', fontSize: 16, fontWeight: '700' },
   buttonOutline: {
     borderRadius: borderRadius.md, padding: spacing.lg, alignItems: 'center',
-    borderWidth: 1, borderColor: colors.accent, marginTop: spacing.md,
+    borderWidth: 1, borderColor: colors.primary, marginTop: spacing.md,
   },
-  buttonOutlineText: { color: colors.accent, fontSize: 16, fontWeight: '600' },
+  buttonOutlineText: { color: colors.primary, fontSize: 16, fontWeight: '600' },
   summaryCard: {
     backgroundColor: colors.card, borderRadius: borderRadius.xl, padding: spacing.xl,
-    borderWidth: 1, borderColor: colors.cardBorder, marginBottom: spacing.xxl,
+    borderWidth: 1, borderColor: colors.border, marginBottom: spacing.xxl,
   },
-  summaryLabel: { color: colors.textSecondary, fontSize: 13, marginBottom: spacing.xs },
+  summaryLabel: { color: colors.mutedForeground, fontSize: 13, marginBottom: spacing.xs },
   summaryValue: { color: colors.text, fontSize: 18, fontWeight: '700' },
   summaryAgent: { color: colors.text, fontSize: 15, marginVertical: 2 },
   confirmButtons: { gap: spacing.md },

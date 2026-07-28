@@ -101,25 +101,25 @@ export function ChatScreen({ route, navigation }: any) {
       {...props}
       wrapperStyle={{
         left: { backgroundColor: colors.card, borderRadius: 16, borderBottomLeftRadius: 4 },
-        right: { backgroundColor: colors.accent, borderRadius: 16, borderBottomRightRadius: 4 },
+        right: { backgroundColor: colors.primary, borderRadius: 16, borderBottomRightRadius: 4 },
       }}
-      textStyle={{ left: { color: colors.text }, right: { color: '#000' } }}
+      textStyle={{ left: { color: colors.foreground }, right: { color: colors.primaryForeground } }}
     />
   );
 
   const renderInputToolbar = (props: any) => (
     <InputToolbar
       {...props}
-      containerStyle={{ backgroundColor: colors.background, borderTopColor: colors.cardBorder, borderTopWidth: 1, paddingHorizontal: 8, paddingVertical: 4 }}
+      containerStyle={{ backgroundColor: colors.background, borderTopColor: colors.border, borderTopWidth: 1, paddingHorizontal: 8, paddingVertical: 4 }}
       primaryStyle={{ alignItems: 'center' }}
-      textInputStyle={{ color: colors.text, fontSize: 16 }}
+      textInputStyle={{ color: colors.foreground, fontSize: 16 }}
     />
   );
 
   const renderSend = (props: any) => (
     <Send {...props} containerStyle={{ justifyContent: 'center', paddingHorizontal: 8 }}>
       <View style={styles.sendButton}>
-        <SendIcon size={16} color={colors.black} />
+        <SendIcon size={16} color={colors.primaryForeground} />
       </View>
     </Send>
   );
@@ -155,7 +155,7 @@ export function ChatScreen({ route, navigation }: any) {
       {/* Typing indicator */}
       {typing && (
         <View style={styles.typingContainer}>
-          <ActivityIndicator size="small" color={colors.accent} />
+          <ActivityIndicator size="small" color={colors.primary} />
           <Text style={styles.typingText}>{agent.name} esta respondendo...</Text>
         </View>
       )}
@@ -168,7 +168,7 @@ export function ChatScreen({ route, navigation }: any) {
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
         renderSend={renderSend}
-        timeTextStyle={{ left: { color: colors.textMuted }, right: { color: colors.textMuted } }}
+        timeTextStyle={{ left: { color: colors.mutedForeground }, right: { color: colors.mutedForeground } }}
         renderChatEmpty={() => (
           <View style={styles.emptyChat}>
             <View style={styles.emptyIconWrap}>
@@ -221,9 +221,9 @@ export function ChatScreen({ route, navigation }: any) {
                 style={styles.actionBtn}
                 onPress={() => { setShowProfile(false); navigation.navigate('MCPTools', { agent }); }}
               >
-                <SettingsIcon size={18} color={colors.text} />
+                <SettingsIcon size={18} color={colors.foreground} />
                 <Text style={styles.actionBtnText}>Gerenciar Tools</Text>
-                <ChevronRightIcon size={18} color={colors.textMuted} />
+                <ChevronRightIcon size={18} color={colors.mutedForeground} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -236,7 +236,7 @@ export function ChatScreen({ route, navigation }: any) {
             </ScrollView>
 
             <TouchableOpacity style={styles.closeBtn} onPress={() => setShowProfile(false)}>
-              <XIcon size={18} color={colors.textSecondary} />
+              <XIcon size={18} color={colors.mutedForeground} />
               <Text style={styles.closeBtnText}>Fechar</Text>
             </TouchableOpacity>
           </View>
@@ -251,37 +251,37 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.md,
     paddingTop: 56, paddingBottom: spacing.md, backgroundColor: colors.background,
-    borderBottomWidth: 1, borderBottomColor: colors.cardBorder,
+    borderBottomWidth: 1, borderBottomColor: colors.border,
   },
   headerBtn: { padding: spacing.sm, marginRight: 4 },
   headerInfo: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   headerAvatar: {
-    width: 36, height: 36, borderRadius: 12, backgroundColor: colors.accentMuted,
+    width: 36, height: 36, borderRadius: 12, backgroundColor: colors.muted,
     justifyContent: 'center', alignItems: 'center',
   },
-  agentName: { color: colors.text, fontSize: 16, fontWeight: '700' },
+  agentName: { color: colors.foreground, fontSize: 16, fontWeight: '700' },
   headerMeta: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 1 },
-  miniDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: colors.textMuted },
-  miniDotActive: { backgroundColor: colors.accent },
-  agentType: { color: colors.textMuted, fontSize: 11 },
+  miniDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: colors.mutedForeground },
+  miniDotActive: { backgroundColor: colors.primary },
+  agentType: { color: colors.mutedForeground, fontSize: 11 },
   typingContainer: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm, backgroundColor: colors.background, gap: spacing.sm,
   },
-  typingText: { color: colors.textSecondary, fontSize: 12 },
+  typingText: { color: colors.mutedForeground, fontSize: 12 },
   sendButton: {
-    width: 32, height: 32, borderRadius: 16, backgroundColor: colors.accent,
+    width: 32, height: 32, borderRadius: 16, backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center',
   },
   emptyChat: {
     flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.xxl, transform: [{ scaleY: -1 }],
   },
   emptyIconWrap: {
-    width: 64, height: 64, borderRadius: 18, backgroundColor: colors.accentMuted,
+    width: 64, height: 64, borderRadius: 18, backgroundColor: colors.muted,
     justifyContent: 'center', alignItems: 'center', marginBottom: spacing.lg,
   },
-  emptyChatTitle: { color: colors.text, fontSize: 18, fontWeight: '600', textAlign: 'center' },
-  emptyChatSubtitle: { color: colors.textSecondary, fontSize: 14, textAlign: 'center', marginTop: 4 },
+  emptyChatTitle: { color: colors.foreground, fontSize: 18, fontWeight: '600', textAlign: 'center' },
+  emptyChatSubtitle: { color: colors.mutedForeground, fontSize: 14, textAlign: 'center', marginTop: 4 },
   // Modal
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'flex-end' },
   modalContent: {
@@ -289,47 +289,47 @@ const styles = StyleSheet.create({
     padding: spacing.xxl, maxHeight: '82%',
   },
   modalHandle: {
-    width: 36, height: 4, borderRadius: 2, backgroundColor: colors.cardBorder,
+    width: 36, height: 4, borderRadius: 2, backgroundColor: colors.border,
     alignSelf: 'center', marginBottom: spacing.xl,
   },
   profileHeader: { alignItems: 'center', marginBottom: spacing.xxl },
   profileAvatarWrap: {
-    width: 64, height: 64, borderRadius: 18, backgroundColor: colors.accentMuted,
+    width: 64, height: 64, borderRadius: 18, backgroundColor: colors.muted,
     justifyContent: 'center', alignItems: 'center', marginBottom: spacing.md,
   },
-  profileName: { color: colors.text, fontSize: 20, fontWeight: '700' },
-  profileModel: { color: colors.textSecondary, fontSize: 14, marginTop: 4 },
+  profileName: { color: colors.foreground, fontSize: 20, fontWeight: '700' },
+  profileModel: { color: colors.mutedForeground, fontSize: 14, marginTop: 4 },
   statusBadge: {
     marginTop: spacing.sm, borderRadius: borderRadius.full, paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs, flexDirection: 'row', alignItems: 'center', gap: 6,
   },
-  statusActive: { backgroundColor: colors.accentMuted },
-  statusInactive: { backgroundColor: colors.cardBorder },
-  statusBadgeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.textMuted },
-  statusBadgeDotActive: { backgroundColor: colors.accent },
-  statusText: { fontSize: 12, fontWeight: '600', color: colors.textMuted },
-  statusTextActive: { color: colors.accent },
+  statusActive: { backgroundColor: colors.muted },
+  statusInactive: { backgroundColor: colors.border },
+  statusBadgeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.mutedForeground },
+  statusBadgeDotActive: { backgroundColor: colors.primary },
+  statusText: { fontSize: 12, fontWeight: '600', color: colors.mutedForeground },
+  statusTextActive: { color: colors.primary },
   profileSection: { marginBottom: spacing.xxl },
   sectionTitle: {
-    color: colors.textSecondary, fontSize: 13, fontWeight: '600', marginBottom: spacing.md,
+    color: colors.mutedForeground, fontSize: 13, fontWeight: '600', marginBottom: spacing.md,
     textTransform: 'uppercase', letterSpacing: 1,
   },
-  noData: { color: colors.textMuted, fontSize: 14 },
+  noData: { color: colors.mutedForeground, fontSize: 14 },
   toolItem: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm, marginBottom: spacing.sm },
-  toolDot: { color: colors.accent, fontSize: 10, marginTop: 4 },
-  toolItemName: { color: colors.text, fontSize: 14, fontWeight: '500' },
-  toolItemServer: { color: colors.textMuted, fontSize: 12 },
+  toolDot: { color: colors.primary, fontSize: 10, marginTop: 4 },
+  toolItemName: { color: colors.foreground, fontSize: 14, fontWeight: '500' },
+  toolItemServer: { color: colors.mutedForeground, fontSize: 12 },
   actionBtn: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.cardHover,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.muted,
     borderRadius: borderRadius.md, padding: spacing.lg, marginBottom: spacing.sm, gap: spacing.md,
   },
   actionBtnDanger: { backgroundColor: colors.danger + '10' },
-  actionBtnText: { flex: 1, color: colors.text, fontSize: 15, fontWeight: '600' },
+  actionBtnText: { flex: 1, color: colors.foreground, fontSize: 15, fontWeight: '600' },
   actionBtnTextDanger: { flex: 1, color: colors.danger, fontSize: 15, fontWeight: '600' },
   closeBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     borderRadius: borderRadius.md, padding: spacing.lg, marginTop: spacing.md,
-    borderWidth: 1, borderColor: colors.cardBorder, gap: spacing.sm,
+    borderWidth: 1, borderColor: colors.border, gap: spacing.sm,
   },
-  closeBtnText: { color: colors.textSecondary, fontSize: 15, fontWeight: '600' },
+  closeBtnText: { color: colors.mutedForeground, fontSize: 15, fontWeight: '600' },
 });

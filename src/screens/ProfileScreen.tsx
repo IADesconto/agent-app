@@ -37,7 +37,7 @@ export function ProfileScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.header}><Text style={styles.title}>Perfil</Text></View>
-        <ActivityIndicator size="large" color={colors.accent} style={{ marginTop: 80 }} />
+        <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 80 }} />
       </View>
     );
   }
@@ -65,7 +65,7 @@ export function ProfileScreen() {
           <View style={styles.planCard}>
             <View style={styles.planHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-                <CrownIcon size={18} color={colors.accent} />
+                <CrownIcon size={18} color={colors.primary} />
                 <Text style={styles.planName}>{plan.name || 'Starter'}</Text>
               </View>
               <View style={styles.planBadge}>
@@ -96,12 +96,12 @@ export function ProfileScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Configuracoes</Text>
         <TouchableOpacity style={styles.menuItem}>
-          <UserIcon size={18} color={colors.textSecondary} />
+          <UserIcon size={18} color={colors.mutedForeground} />
           <Text style={styles.menuItemText}>Notificacoes</Text>
-          <ChevronRightIcon size={18} color={colors.textMuted} />
+          <ChevronRightIcon size={18} color={colors.mutedForeground} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem}>
-          <SettingsIcon size={18} color={colors.textSecondary} />
+          <SettingsIcon size={18} color={colors.mutedForeground} />
           <Text style={styles.menuItemText}>Idioma</Text>
           <Text style={styles.menuItemValue}>Portugues</Text>
         </TouchableOpacity>
@@ -125,21 +125,21 @@ const styles = StyleSheet.create({
   title: { color: colors.text, fontSize: 22, fontWeight: '700' },
   avatarSection: { alignItems: 'center', paddingVertical: spacing.xxl },
   avatar: {
-    width: 72, height: 72, borderRadius: 36, backgroundColor: colors.accent,
+    width: 72, height: 72, borderRadius: 36, backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center', marginBottom: spacing.md,
   },
   avatarText: { color: '#000', fontSize: 28, fontWeight: '700' },
   name: { color: colors.text, fontSize: 20, fontWeight: '700', marginBottom: 4 },
-  email: { color: colors.textSecondary, fontSize: 14 },
-  tenant: { color: colors.textMuted, fontSize: 12, marginTop: spacing.xs },
+  email: { color: colors.mutedForeground, fontSize: 14 },
+  tenant: { color: colors.mutedForeground, fontSize: 12, marginTop: spacing.xs },
   section: { paddingHorizontal: spacing.xl, marginBottom: spacing.xl },
   sectionTitle: {
-    color: colors.textSecondary, fontSize: 13, fontWeight: '600', marginBottom: spacing.md,
+    color: colors.mutedForeground, fontSize: 13, fontWeight: '600', marginBottom: spacing.md,
     textTransform: 'uppercase', letterSpacing: 1,
   },
   planCard: {
     backgroundColor: colors.card, borderRadius: borderRadius.xl, padding: spacing.xl,
-    borderWidth: 1, borderColor: colors.cardBorder,
+    borderWidth: 1, borderColor: colors.border,
   },
   planHeader: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
@@ -147,28 +147,28 @@ const styles = StyleSheet.create({
   },
   planName: { color: colors.text, fontSize: 18, fontWeight: '700' },
   planBadge: {
-    backgroundColor: colors.accentMuted, borderRadius: borderRadius.sm,
+    backgroundColor: colors.muted, borderRadius: borderRadius.sm,
     paddingHorizontal: spacing.sm, paddingVertical: 2,
   },
-  planBadgeText: { color: colors.accent, fontSize: 11, fontWeight: '600' },
-  planPrice: { color: colors.accent, fontSize: 24, fontWeight: '800', marginBottom: spacing.lg },
-  planPeriod: { color: colors.textSecondary, fontSize: 14, fontWeight: '400' },
+  planBadgeText: { color: colors.primary, fontSize: 11, fontWeight: '600' },
+  planPrice: { color: colors.primary, fontSize: 24, fontWeight: '800', marginBottom: spacing.lg },
+  planPeriod: { color: colors.mutedForeground, fontSize: 14, fontWeight: '400' },
   planLimits: { flexDirection: 'row', gap: spacing.xxl, marginBottom: spacing.lg },
   limitItem: { alignItems: 'center' },
   limitValue: { color: colors.text, fontSize: 22, fontWeight: '700' },
-  limitLabel: { color: colors.textSecondary, fontSize: 12, marginTop: 2 },
+  limitLabel: { color: colors.mutedForeground, fontSize: 12, marginTop: 2 },
   upgradeBtn: {
-    borderWidth: 1, borderColor: colors.accent, borderRadius: borderRadius.md,
+    borderWidth: 1, borderColor: colors.primary, borderRadius: borderRadius.md,
     padding: spacing.md, alignItems: 'center',
   },
-  upgradeBtnText: { color: colors.accent, fontSize: 14, fontWeight: '600' },
+  upgradeBtnText: { color: colors.primary, fontSize: 14, fontWeight: '600' },
   menuItem: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card,
     borderRadius: borderRadius.md, padding: spacing.lg, marginBottom: spacing.xs,
-    borderWidth: 1, borderColor: colors.cardBorder, gap: spacing.md,
+    borderWidth: 1, borderColor: colors.border, gap: spacing.md,
   },
   menuItemText: { flex: 1, color: colors.text, fontSize: 15 },
-  menuItemValue: { color: colors.textSecondary, fontSize: 14 },
+  menuItemValue: { color: colors.mutedForeground, fontSize: 14 },
   logoutBtn: {
     flexDirection: 'row', marginHorizontal: spacing.xl, backgroundColor: colors.danger + '10',
     borderRadius: borderRadius.md, padding: spacing.lg, alignItems: 'center',

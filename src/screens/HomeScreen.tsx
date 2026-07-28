@@ -82,7 +82,7 @@ export function HomeScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.accent} />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -134,7 +134,7 @@ export function HomeScreen({ navigation }: any) {
           />
           {creating && (
             <View style={styles.creatingIndicator}>
-              <ActivityIndicator size="small" color={colors.accent} />
+              <ActivityIndicator size="small" color={colors.primary} />
               <Text style={styles.creatingText}>Criando agente...</Text>
             </View>
           )}
@@ -144,7 +144,7 @@ export function HomeScreen({ navigation }: any) {
       {/* Stats bar */}
       <View style={styles.statsBar}>
         <View style={styles.statItem}>
-          <SparklesIcon size={14} color={colors.accent} />
+          <SparklesIcon size={14} color={colors.primary} />
           <Text style={styles.statValue}>{activeCount}</Text>
           <Text style={styles.statLabel}>ativos</Text>
         </View>
@@ -161,12 +161,12 @@ export function HomeScreen({ navigation }: any) {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
         ListEmptyComponent={
           <View style={styles.empty}>
             <View style={styles.emptyIconWrap}>
-              <SparklesIcon size={32} color={colors.accent} />
+              <SparklesIcon size={32} color={colors.primary} />
             </View>
             <Text style={styles.emptyTitle}>Nenhum agente ainda</Text>
             <Text style={styles.emptySubtitle}>
@@ -210,22 +210,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addBtn: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.primary,
   },
   addBtnActive: {
-    backgroundColor: colors.cardBorder,
+    backgroundColor: colors.border,
   },
   headerCenter: {
     alignItems: 'center',
   },
   appName: {
-    color: colors.text,
+    color: colors.foreground,
     fontSize: 18,
     fontWeight: '700',
     letterSpacing: -0.5,
   },
   headerSub: {
-    color: colors.textMuted,
+    color: colors.mutedForeground,
     fontSize: 11,
     marginTop: 1,
     fontFamily: 'monospace',
@@ -237,18 +237,18 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     marginBottom: spacing.md,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
+    borderColor: colors.border,
   },
   catalogHeader: {
     marginBottom: spacing.md,
   },
   catalogTitle: {
-    color: colors.text,
+    color: colors.foreground,
     fontSize: 16,
     fontWeight: '700',
   },
   catalogHint: {
-    color: colors.textMuted,
+    color: colors.mutedForeground,
     fontSize: 12,
     marginTop: 2,
     fontFamily: 'monospace',
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   creatingText: {
-    color: colors.accent,
+    color: colors.primary,
     fontSize: 12,
     fontFamily: 'monospace',
   },
@@ -283,20 +283,20 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   statValue: {
-    color: colors.accent,
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '700',
     fontFamily: 'monospace',
   },
   statLabel: {
-    color: colors.textMuted,
+    color: colors.mutedForeground,
     fontSize: 12,
     fontFamily: 'monospace',
   },
   statDivider: {
     width: 1,
     height: 16,
-    backgroundColor: colors.cardBorder,
+    backgroundColor: colors.border,
   },
   listContent: {
     paddingVertical: spacing.sm,
@@ -311,19 +311,19 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 20,
-    backgroundColor: colors.accentMuted,
+    backgroundColor: colors.muted,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.xl,
   },
   emptyTitle: {
-    color: colors.text,
+    color: colors.foreground,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: spacing.sm,
   },
   emptySubtitle: {
-    color: colors.textSecondary,
+    color: colors.mutedForeground,
     fontSize: 15,
     textAlign: 'center',
     lineHeight: 22,
