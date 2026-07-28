@@ -1,15 +1,23 @@
+import { StyleSheet } from 'react-native';
+
 export const colors = {
   background: '#0a0a0a',
+  surface: '#0e0e0e',
   card: '#1a1a1a',
+  cardHover: '#222222',
   cardBorder: '#2a2a2a',
   accent: '#00d46a',
-  accentLight: '#00d46a20',
-  accentMuted: '#00d46a10',
-  text: '#fff',
-  textSecondary: '#888',
-  textMuted: '#666',
+  accentGlow: '#00d46a25',
+  accentMuted: '#00d46a12',
+  text: '#f5f5f5',
+  textSecondary: '#999999',
+  textMuted: '#666666',
+  black: '#000000',
+  white: '#ffffff',
   danger: '#ff4444',
   warning: '#f0a020',
+  codeBg: '#0d1117',
+  codeBorder: '#30363d',
 };
 
 export const spacing = {
@@ -29,10 +37,10 @@ export const borderRadius = {
   full: 999,
 };
 
-export const typography = {
+export const typography = StyleSheet.create({
   title: { fontSize: 22, fontWeight: '700' as const, color: colors.text },
   subtitle: { fontSize: 16, fontWeight: '600' as const, color: colors.text },
   body: { fontSize: 15, color: colors.text },
   caption: { fontSize: 13, color: colors.textSecondary },
   small: { fontSize: 12, color: colors.textMuted },
-};
+});

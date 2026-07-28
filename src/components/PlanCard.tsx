@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { CheckCircleIcon } from './icons';
 import { colors, spacing, borderRadius } from '../theme';
 
 export interface Plan {
@@ -21,7 +22,7 @@ interface PlanCardProps {
 export function PlanCard({ plan, selected, onPress }: PlanCardProps) {
   return (
     <TouchableOpacity
-      style={[styles.card, selected && styles.cardSelected]}
+      style={[styles.card, selected && styles.cardSelected, plan.highlighted && styles.cardHighlighted]}
       onPress={() => onPress(plan)}
       activeOpacity={0.7}
     >
@@ -49,12 +50,15 @@ export function PlanCard({ plan, selected, onPress }: PlanCardProps) {
       </View>
       <View style={styles.features}>
         {plan.features.map((f, i) => (
-          <Text key={i} style={styles.feature}>{'\u2022'} {f}</Text>
+          <View key={i} style={styles.featureRow}>
+            <CheckCircleIcon size={12} color={colors.accent} />
+            <Text key={i} style={styles.feature}>{f}</Text>
+          </View>
         ))}
       </View>
       {selected && (
         <View style={styles.checkmark}>
-          <Text style={styles.checkmarkText}>{'\u2713'}</Text>
+          <CheckCircleIcon size={20} color={colors.black} />
         </View>
       )}
     </TouchableOpacity>
@@ -73,6 +77,9 @@ const styles = StyleSheet.create({
   cardSelected: {
     borderColor: colors.accent,
     backgroundColor: colors.accentMuted,
+  },
+  cardHighlighted: {
+    borderColor: colors.accent + '50',
   },
   header: {
     flexDirection: 'row',
@@ -130,6 +137,11 @@ const styles = StyleSheet.create({
   features: {
     gap: spacing.xs,
   },
+  featureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   feature: {
     color: colors.textSecondary,
     fontSize: 12,
@@ -138,16 +150,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 12,
     right: 12,
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: colors.accent,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkmarkText: {
-    color: '#000',
-    fontSize: 15,
-    fontWeight: '700',
   },
 });

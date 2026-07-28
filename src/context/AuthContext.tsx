@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import * as SecureStore from 'expo-secure-store';
+import { storage } from '../util/storage';
 import * as api from '../api/client';
 
 interface User {
@@ -15,6 +15,7 @@ interface AuthContextType {
   needsOnboarding: boolean;
   login: (email: string, password: string) => Promise<string | null>;
   signup: (email: string, password: string) => Promise<string | null>;
+  googleLogin: (idToken: string) => Promise<string | null>;
   logout: () => Promise<void>;
   finishOnboarding: () => void;
 }
@@ -26,6 +27,7 @@ const AuthContext = createContext<AuthContextType>({
   needsOnboarding: false,
   login: async () => null,
   signup: async () => null,
+  googleLogin: async () => null,
   logout: async () => {},
   finishOnboarding: () => {},
 });
@@ -33,6 +35,22 @@ const AuthContext = createContext<AuthContextType>({
 const TOKEN_KEY = 'agent_session_token';
 const USER_KEY = 'agent_user';
 const ONBOARDING_KEY = 'agent_onboarding_done';
+
+async function checkOnboarding(tenantId: string): Promise<boolean> {
+  try {
+    const onboardRes = await api.getOnboardingStatus(tenantId);
+    if (onboardRes.data && onboardRes.data.completed) {
+      await storage.set(ONBOARDING_KEY, 'true');
+      return false;
+    }
+    if (!onboardRes.error) return true;
+  } catch {}
+  // Fallback: check agents
+  const agentsRes = await api.listAgents(tenantId);
+  if (!agentsRes.data || agentsRes.data.length === 0) return true;
+  await storage.set(ONBOARDING_KEY, 'true');
+  return false;
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -45,35 +63,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function loadStoredSession() {
     try {
-      const storedToken = await SecureStore.getItemAsync(TOKEN_KEY);
+      const storedToken = await storage.get(TOKEN_KEY);
       if (storedToken) {
         api.setToken(storedToken);
+
+        // Try to restore user from stored data first for instant load
+        const storedUser = await storage.getJSON<User>(USER_KEY);
+        if (storedUser) {
+          setUser(storedUser);
+          setIsLoading(false);
+
+          // Validate session in background
+          const { data } = await api.getSession();
+          if (!data) {
+            // Session expired — clear everything
+            api.setToken(null);
+            setUser(null);
+            await storage.remove(TOKEN_KEY);
+            await storage.remove(USER_KEY);
+            await storage.remove(ONBOARDING_KEY);
+            return;
+          }
+          const userData = { user_id: data.user_id, email: data.email, tenant_id: data.tenant_id };
+          setUser(userData);
+          await storage.setJSON(USER_KEY, userData);
+
+          // Check onboarding via API
+          const onboardingDone = await storage.get(ONBOARDING_KEY);
+          if (!onboardingDone) {
+            const needsOnboard = await checkOnboarding(storedUser.tenant_id);
+            if (needsOnboard) setNeedsOnboarding(true);
+          }
+          return;
+        }
+
+        // No stored user — validate session first
         const { data } = await api.getSession();
         if (data) {
           const userData = { user_id: data.user_id, email: data.email, tenant_id: data.tenant_id };
           setUser(userData);
-          await SecureStore.setItemAsync(USER_KEY, JSON.stringify(userData));
+          await storage.setJSON(USER_KEY, userData);
 
-          // Check if onboarding already done
-          const onboardingDone = await SecureStore.getItemAsync(ONBOARDING_KEY);
+          const onboardingDone = await storage.get(ONBOARDING_KEY);
           if (!onboardingDone) {
-            // Check if user has agents
-            const agentsRes = await api.listAgents(data.tenant_id);
-            if (!agentsRes.data || agentsRes.data.length === 0) {
-              setNeedsOnboarding(true);
-            } else {
-              await SecureStore.setItemAsync(ONBOARDING_KEY, 'true');
-            }
+            const needsOnboard = await checkOnboarding(data.tenant_id);
+            if (needsOnboard) setNeedsOnboarding(true);
           }
         } else {
           api.setToken(null);
-          await SecureStore.deleteItemAsync(TOKEN_KEY);
-          await SecureStore.deleteItemAsync(USER_KEY);
-          await SecureStore.deleteItemAsync(ONBOARDING_KEY);
+          await storage.remove(TOKEN_KEY);
+          await storage.remove(USER_KEY);
+          await storage.remove(ONBOARDING_KEY);
         }
       }
     } catch {
-      // Offline or error
+      // Network error — if we have a stored user, keep using it
     } finally {
       setIsLoading(false);
     }
@@ -87,18 +131,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const userData = { user_id: data.user.id, email: data.user.email, tenant_id: data.tenant_id };
     setUser(userData);
-    await SecureStore.setItemAsync(TOKEN_KEY, data.token);
-    await SecureStore.setItemAsync(USER_KEY, JSON.stringify(userData));
+    await storage.set(TOKEN_KEY, data.token);
+    await storage.setJSON(USER_KEY, userData);
 
-    // Check onboarding
-    const onboardingDone = await SecureStore.getItemAsync(ONBOARDING_KEY);
+    const onboardingDone = await storage.get(ONBOARDING_KEY);
     if (!onboardingDone) {
-      const agentsRes = await api.listAgents(data.tenant_id);
-      if (!agentsRes.data || agentsRes.data.length === 0) {
-        setNeedsOnboarding(true);
-      } else {
-        await SecureStore.setItemAsync(ONBOARDING_KEY, 'true');
-      }
+      const needsOnboard = await checkOnboarding(data.tenant_id);
+      if (needsOnboard) setNeedsOnboarding(true);
     }
 
     return null;
@@ -109,23 +148,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error || !data) {
       return error || 'Erro ao criar conta';
     }
-    // After signup, login immediately
     return loginFn(email, password);
   }, [loginFn]);
 
+  const googleLoginFn = useCallback(async (idToken: string): Promise<string | null> => {
+    const { data, error } = await api.googleLogin(idToken);
+    if (error || !data) {
+      return error || 'Erro ao fazer login com Google';
+    }
+
+    const userData = { user_id: data.user.id, email: data.user.email, tenant_id: data.tenant_id };
+    setUser(userData);
+    await storage.set(TOKEN_KEY, data.token);
+    await storage.setJSON(USER_KEY, userData);
+
+    const onboardingDone = await storage.get(ONBOARDING_KEY);
+    if (!onboardingDone) {
+      const needsOnboard = await checkOnboarding(data.tenant_id);
+      if (needsOnboard) setNeedsOnboarding(true);
+    }
+
+    return null;
+  }, []);
+
   const logoutFn = useCallback(async () => {
-    await api.logout();
+    try { await api.logout(); } catch {}
     api.setToken(null);
     setUser(null);
     setNeedsOnboarding(false);
-    await SecureStore.deleteItemAsync(TOKEN_KEY);
-    await SecureStore.deleteItemAsync(USER_KEY);
-    await SecureStore.deleteItemAsync(ONBOARDING_KEY);
+    await storage.remove(TOKEN_KEY);
+    await storage.remove(USER_KEY);
+    await storage.remove(ONBOARDING_KEY);
   }, []);
 
   const finishOnboardingFn = useCallback(async () => {
     setNeedsOnboarding(false);
-    await SecureStore.setItemAsync(ONBOARDING_KEY, 'true');
+    await storage.set(ONBOARDING_KEY, 'true');
   }, []);
 
   return (
@@ -137,6 +195,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         needsOnboarding,
         login: loginFn,
         signup: signupFn,
+        googleLogin: googleLoginFn,
         logout: logoutFn,
         finishOnboarding: finishOnboardingFn,
       }}

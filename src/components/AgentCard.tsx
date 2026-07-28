@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { getAgentIconComponent, ChevronRightIcon } from './icons';
 import { colors, spacing, borderRadius } from '../theme';
 
 interface Agent {
@@ -10,40 +11,13 @@ interface Agent {
   status: string;
 }
 
-const AGENT_ICONS: Record<string, string> = {
-  'assistente-financeiro': '\u{1F4B0}',
-  'assistente-contabil': '\u{1F4D1}',
-  'assistente-vendas': '\u{1F4C8}',
-  'assistente-suporte': '\u{1F9D1}\u200D\u{1F4BB}',
-  'assistente-dev': '\u{1F4BB}',
-  'assistente-marketing': '\u{1F4E3}',
-  'assistente-dados': '\u{1F4CA}',
-  'assistente-navegador': '\u{1F310}',
-  'assistente-juridico': '\u2696\uFE0F',
-  'assistente-rh': '\u{1F465}',
-};
-
-const AGENT_NAMES: Record<string, string> = {
-  'assistente-financeiro': 'Financeiro',
-  'assistente-contabil': 'Contabil',
-  'assistente-vendas': 'Vendas',
-  'assistente-suporte': 'Suporte',
-  'assistente-dev': 'Dev',
-  'assistente-marketing': 'Marketing',
-  'assistente-dados': 'Dados',
-  'assistente-navegador': 'Navegador Web',
-  'assistente-juridico': 'Juridico',
-  'assistente-rh': 'RH',
-};
-
 interface AgentCardProps {
   agent: Agent;
   onPress: (agent: Agent) => void;
 }
 
 export function AgentCard({ agent, onPress }: AgentCardProps) {
-  const icon = AGENT_ICONS[agent.type] || '\u{1F916}';
-  const typeName = AGENT_NAMES[agent.type] || agent.type;
+  const isActive = agent.status === 'active' || agent.status === 'idle';
 
   return (
     <TouchableOpacity
@@ -51,14 +25,20 @@ export function AgentCard({ agent, onPress }: AgentCardProps) {
       onPress={() => onPress(agent)}
       activeOpacity={0.7}
     >
-      <View style={styles.iconContainer}>
-        <Text style={styles.icon}>{icon}</Text>
+      <View style={styles.iconWrap}>
+        {getAgentIconComponent(agent.name)}
       </View>
       <View style={styles.info}>
         <Text style={styles.name} numberOfLines={1}>{agent.name}</Text>
-        <Text style={styles.type}>{typeName} · {agent.model}</Text>
+        <View style={styles.metaRow}>
+          <Text style={styles.model}>{agent.model}</Text>
+          <View style={[styles.statusDot, isActive && styles.statusActive]} />
+          <Text style={[styles.statusLabel, isActive && styles.statusLabelActive]}>
+            {isActive ? 'online' : 'offline'}
+          </Text>
+        </View>
       </View>
-      <View style={[styles.statusDot, agent.status === 'active' ? styles.statusActive : styles.statusInactive]} />
+      <ChevronRightIcon size={20} color={colors.textMuted} />
     </TouchableOpacity>
   );
 }
@@ -71,45 +51,51 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
     marginHorizontal: spacing.lg,
-    marginVertical: spacing.xs,
+    marginVertical: 5,
     borderWidth: 1,
     borderColor: colors.cardBorder,
   },
-  iconContainer: {
+  iconWrap: {
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: 14,
     backgroundColor: colors.accentMuted,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,
-  },
-  icon: {
-    fontSize: 22,
   },
   info: {
     flex: 1,
   },
   name: {
     color: colors.text,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
+    marginBottom: 4,
   },
-  type: {
-    color: colors.textSecondary,
-    fontSize: 13,
-    marginTop: 2,
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  model: {
+    color: colors.textMuted,
+    fontSize: 12,
   },
   statusDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginLeft: spacing.sm,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.textMuted,
   },
   statusActive: {
     backgroundColor: colors.accent,
   },
-  statusInactive: {
-    backgroundColor: colors.textMuted,
+  statusLabel: {
+    color: colors.textMuted,
+    fontSize: 11,
+  },
+  statusLabelActive: {
+    color: colors.accent,
   },
 });

@@ -121,3 +121,67 @@ export async function addAgentTool(tenantId: string, agentId: string, data: { na
 export async function deleteAgentTool(tenantId: string, agentId: string, toolId: string) {
   return apiFetch<any>(`/tenants/${tenantId}/agents/${agentId}/tools/${toolId}`, { method: 'DELETE' });
 }
+
+// Google OAuth
+export async function googleLogin(idToken: string) {
+  const res = await apiFetch<{ user: any; tenant_id: string; token: string }>('/auth/google', {
+    method: 'POST',
+    body: JSON.stringify({ id_token: idToken }),
+  });
+  if (res.data?.token) {
+    setToken(res.data.token);
+  }
+  return res;
+}
+
+// Plans
+export async function listPlans() {
+  return apiFetch<any[]>('/plans');
+}
+
+export async function getTenantPlan(tenantId: string) {
+  return apiFetch<any>(`/tenants/${tenantId}/plan`);
+}
+
+export async function updateTenantPlan(tenantId: string, planId: string) {
+  return apiFetch<any>(`/tenants/${tenantId}/plan`, {
+    method: 'PUT',
+    body: JSON.stringify({ plan_id: planId }),
+  });
+}
+
+// Profile
+export async function getProfile(tenantId: string) {
+  return apiFetch<{
+    email: string;
+    name?: string;
+    avatar_url?: string;
+    company?: string;
+    plan?: string;
+    onboarding_completed?: boolean;
+  }>(`/tenants/${tenantId}/profile`);
+}
+
+export async function updateProfile(tenantId: string, data: { name?: string; avatar_url?: string; company?: string }) {
+  return apiFetch<any>(`/tenants/${tenantId}/profile`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+// Onboarding
+export async function getOnboardingStatus(tenantId: string) {
+  return apiFetch<{ completed: boolean; plan_id?: string; selected_templates?: string[] }>(`/tenants/${tenantId}/onboarding`);
+}
+
+export async function completeOnboarding(tenantId: string, data: { plan_id: string; selected_templates: string[] }) {
+  return apiFetch<any>(`/tenants/${tenantId}/onboarding`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+// MCP Servers catalog
+export async function listMCPServers() {
+  return apiFetch<any[]>('/mcp-servers');
+}

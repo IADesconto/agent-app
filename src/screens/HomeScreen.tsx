@@ -12,6 +12,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { AgentCard } from '../components/AgentCard';
 import { TemplateCard } from '../components/TemplateCard';
+import { MenuIcon, PlusIcon, XIcon, SparklesIcon } from '../components/icons';
 import * as api from '../api/client';
 import { colors, spacing, borderRadius } from '../theme';
 
@@ -23,56 +24,50 @@ interface Agent {
   status: string;
 }
 
-const ALL_TEMPLATES = [
-  { id: 'assistente-financeiro', name: 'Financeiro', description: 'Analise financeira e investimentos' },
-  { id: 'assistente-contabil', name: 'Contabil', description: 'Contabilidade e impostos' },
-  { id: 'assistente-vendas', name: 'Vendas', description: 'Pipeline e CRM inteligente' },
-  { id: 'assistente-suporte', name: 'Suporte', description: 'Atendimento ao cliente 24/7' },
-  { id: 'assistente-dev', name: 'Dev', description: 'Codigo, debug e deploy' },
-  { id: 'assistente-marketing', name: 'Marketing', description: 'Campanhas e SEO' },
-  { id: 'assistente-dados', name: 'Dados', description: 'Dashboards e analises' },
-  { id: 'assistente-navegador', name: 'Navegador Web', description: 'Busca e automacao web' },
-  { id: 'assistente-juridico', name: 'Juridico', description: 'Contratos e compliance' },
-  { id: 'assistente-rh', name: 'RH', description: 'Recrutamento e cultura' },
-];
+interface Template {
+  id: string;
+  name: string;
+  description: string;
+}
 
 export function HomeScreen({ navigation }: any) {
   const { user } = useAuth();
   const [agents, setAgents] = useState<Agent[]>([]);
+  const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [showCatalog, setShowCatalog] = useState(false);
   const [creating, setCreating] = useState<string | null>(null);
 
-  async function loadAgents() {
+  async function loadData() {
     if (!user) return;
-    const { data } = await api.listAgents(user.tenant_id);
-    if (data) {
-      setAgents(data);
-    }
+    const [agentsRes, templatesRes] = await Promise.all([
+      api.listAgents(user.tenant_id),
+      api.listTemplates(),
+    ]);
+    if (agentsRes.data) setAgents(agentsRes.data);
+    if (templatesRes.data) setTemplates(templatesRes.data);
   }
 
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-      loadAgents().finally(() => setLoading(false));
+      loadData().finally(() => setLoading(false));
     }, [user?.tenant_id])
   );
 
   async function onRefresh() {
     setRefreshing(true);
-    await loadAgents();
+    await loadData();
     setRefreshing(false);
   }
 
   async function handleCreateAgent(templateId: string) {
     if (!user) return;
     setCreating(templateId);
-    const { data, error } = await api.createAgentFromTemplate(user.tenant_id, templateId);
+    const { data } = await api.createAgentFromTemplate(user.tenant_id, templateId);
     setCreating(null);
-    if (error) {
-      // Alert handled silently
-    } else if (data) {
+    if (data) {
       setAgents(prev => [...prev, data]);
       setShowCatalog(false);
     }
@@ -81,6 +76,8 @@ export function HomeScreen({ navigation }: any) {
   function handleAgentPress(agent: Agent) {
     navigation.navigate('Chat', { agent });
   }
+
+  const activeCount = agents.filter(a => a.status === 'active' || a.status === 'idle').length;
 
   if (loading) {
     return (
@@ -94,24 +91,35 @@ export function HomeScreen({ navigation }: any) {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Text style={styles.menuIcon}>{'\u2630'}</Text>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.headerBtn}>
+          <MenuIcon size={22} />
         </TouchableOpacity>
-        <Text style={styles.title}>Meus Agentes</Text>
-        <TouchableOpacity onPress={() => setShowCatalog(!showCatalog)}>
-          <View style={styles.addBtn}>
-            <Text style={styles.addBtnText}>{showCatalog ? '{ }\xd7' : '+'}</Text>
-          </View>
+        <View style={styles.headerCenter}>
+          <Text style={styles.appName}>10ContoAI</Text>
+          <Text style={styles.headerSub}>{agents.length} agente{agents.length !== 1 ? 's' : ''}</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => setShowCatalog(!showCatalog)}
+          style={[styles.headerBtn, styles.addBtn, showCatalog && styles.addBtnActive]}
+        >
+          {showCatalog ? (
+            <XIcon size={18} color={colors.black} />
+          ) : (
+            <PlusIcon size={18} color={colors.black} />
+          )}
         </TouchableOpacity>
       </View>
 
-      {/* Template catalog (expandable) */}
+      {/* Template catalog */}
       {showCatalog && (
         <View style={styles.catalog}>
-          <Text style={styles.catalogTitle}>Adicionar novo agente</Text>
+          <View style={styles.catalogHeader}>
+            <Text style={styles.catalogTitle}>Novo agente</Text>
+            <Text style={styles.catalogHint}>Escolha um template</Text>
+          </View>
           <FlatList
             horizontal
-            data={ALL_TEMPLATES}
+            data={templates}
             keyExtractor={item => item.id}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.catalogList}
@@ -125,7 +133,7 @@ export function HomeScreen({ navigation }: any) {
             )}
           />
           {creating && (
-            <View style={styles.creatingOverlay}>
+            <View style={styles.creatingIndicator}>
               <ActivityIndicator size="small" color={colors.accent} />
               <Text style={styles.creatingText}>Criando agente...</Text>
             </View>
@@ -133,24 +141,36 @@ export function HomeScreen({ navigation }: any) {
         </View>
       )}
 
+      {/* Stats bar */}
+      <View style={styles.statsBar}>
+        <View style={styles.statItem}>
+          <SparklesIcon size={14} color={colors.accent} />
+          <Text style={styles.statValue}>{activeCount}</Text>
+          <Text style={styles.statLabel}>ativos</Text>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statItem}>
+          <Text style={styles.statValue}>{agents.length}</Text>
+          <Text style={styles.statLabel}>total</Text>
+        </View>
+      </View>
+
       {/* Agent list */}
       <FlatList
         data={agents}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={colors.accent}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} />
         }
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Text style={styles.emptyIcon}>{'\u{1F916}'}</Text>
+            <View style={styles.emptyIconWrap}>
+              <SparklesIcon size={32} color={colors.accent} />
+            </View>
             <Text style={styles.emptyTitle}>Nenhum agente ainda</Text>
             <Text style={styles.emptySubtitle}>
-              Toque no '+' para adicionar seu primeiro agente
+              Toque em + para adicionar seu primeiro agente
             </Text>
           </View>
         }
@@ -175,55 +195,68 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
     paddingTop: 56,
     paddingBottom: spacing.md,
     backgroundColor: colors.background,
   },
-  menuIcon: {
-    color: colors.text,
-    fontSize: 24,
-  },
-  title: {
-    color: colors.text,
-    fontSize: 20,
-    fontWeight: '700',
-  },
-  addBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.accent,
+  headerBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  addBtnText: {
-    color: '#000',
-    fontSize: 20,
+  addBtn: {
+    backgroundColor: colors.accent,
+  },
+  addBtnActive: {
+    backgroundColor: colors.cardBorder,
+  },
+  headerCenter: {
+    alignItems: 'center',
+  },
+  appName: {
+    color: colors.text,
+    fontSize: 18,
     fontWeight: '700',
-    lineHeight: 22,
+    letterSpacing: -0.5,
+  },
+  headerSub: {
+    color: colors.textMuted,
+    fontSize: 11,
+    marginTop: 1,
+    fontFamily: 'monospace',
   },
   catalog: {
     backgroundColor: colors.card,
     marginHorizontal: spacing.lg,
-    borderRadius: borderRadius.lg,
+    borderRadius: borderRadius.xl,
     padding: spacing.lg,
     marginBottom: spacing.md,
     borderWidth: 1,
     borderColor: colors.cardBorder,
   },
+  catalogHeader: {
+    marginBottom: spacing.md,
+  },
   catalogTitle: {
     color: colors.text,
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: spacing.md,
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  catalogHint: {
+    color: colors.textMuted,
+    fontSize: 12,
+    marginTop: 2,
+    fontFamily: 'monospace',
   },
   catalogList: {
     gap: spacing.md,
   },
-  creatingOverlay: {
+  creatingIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -232,18 +265,56 @@ const styles = StyleSheet.create({
   },
   creatingText: {
     color: colors.accent,
-    fontSize: 13,
+    fontSize: 12,
+    fontFamily: 'monospace',
+  },
+  statsBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: spacing.md,
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.sm,
+    gap: spacing.xl,
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  statValue: {
+    color: colors.accent,
+    fontSize: 16,
+    fontWeight: '700',
+    fontFamily: 'monospace',
+  },
+  statLabel: {
+    color: colors.textMuted,
+    fontSize: 12,
+    fontFamily: 'monospace',
+  },
+  statDivider: {
+    width: 1,
+    height: 16,
+    backgroundColor: colors.cardBorder,
   },
   listContent: {
     paddingVertical: spacing.sm,
+    paddingBottom: 100,
   },
   empty: {
     alignItems: 'center',
-    paddingTop: 80,
+    paddingTop: 100,
+    paddingHorizontal: spacing.xxl,
   },
-  emptyIcon: {
-    fontSize: 64,
-    marginBottom: spacing.lg,
+  emptyIconWrap: {
+    width: 72,
+    height: 72,
+    borderRadius: 20,
+    backgroundColor: colors.accentMuted,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.xl,
   },
   emptyTitle: {
     color: colors.text,
@@ -254,5 +325,7 @@ const styles = StyleSheet.create({
   emptySubtitle: {
     color: colors.textSecondary,
     fontSize: 15,
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });
